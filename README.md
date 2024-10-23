@@ -44,7 +44,7 @@ Please click [here](docs/loki.md) to install Loki Stack (Loki/Grafana/Prometheus
 
 ### Steps to Authenticate and access cluster.
 
-Get Your STS Token from MFA and configure by executing [this](awsAuthMFA2.ps1) Powershell Script. Please edit this powrshell script in notepad and replace 'arn:aws:iam::518955882229:mfa/GA-Iphone14ProMax' with your MFA ARN before execution.
+Get Your STS Token from MFA and configure by executing [this](awsAuthMFA2.ps1) Powershell Script. Please edit this powrshell script in notepad and replace 'arn:aws:iam::xxxxxxxxxx:mfa/GA-Iphone14ProMax' with your MFA ARN before execution.
 
 Prequisite : Install and configure [AWS CLI V2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
 
