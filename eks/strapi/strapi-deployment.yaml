@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: strapi
+  namespace: qa-cms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: strapi
+  template:
+    metadata:
+      labels:
+        app: strapi
+    spec:
+      containers:
+        - name: strapi
+          image: strapi/strapi:latest
+          env:
+            - name: DATABASE_HOST
+              value: ibb-eks-db.csfanrthcvhv.ap-south-1.rds.amazonaws.com
+            - name: DATABASE_PORT
+              value: "3306"
+            - name: DATABASE_NAME
+              value: strapi
+            - name: DATABASE_USERNAME
+              value: admin
+            - name: DATABASE_PASSWORD
+              value: v1AODnvT5FUINKsXKnee
+          ports:
+            - containerPort: 1337
+          volumeMounts:
+            - name: strapi-storage
+              mountPath: /srv/app/public/uploads
+      volumes:
+        - name: strapi-storage
+          persistentVolumeClaim:
+            claimName: strapi-pvc

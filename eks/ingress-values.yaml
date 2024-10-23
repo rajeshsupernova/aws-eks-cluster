@@ -1,0 +1,13 @@
+controller:
+  hostNetwork: true
+  replicaCount: 2
+  topologySpreadConstraints:
+   - maxSkew: 1
+     topologyKey: role
+     whenUnsatisfiable: ScheduleAnyway
+     labelSelector:
+       matchLabels:
+         app.kubernetes.io/instance: ingress-nginx-internal
+
+
+

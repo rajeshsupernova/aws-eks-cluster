@@ -1,0 +1,61 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: #eks_cluster_name#
+  region: #eks_cluster_region#
+  version: "1.27"
+
+vpc:
+  id: "#VPCID#"
+  subnets:
+    private:
+      #eks_cluster_region#a:
+        id: "#privateSubnet1#"
+      #eks_cluster_region#b:
+        id: "#privateSubnet2#"
+      #eks_cluster_region#c:
+      #  id: "#privateSubnet3#"
+    public:
+      #eks_cluster_region#a:
+        id: "#publicSubnet1#"
+      #eks_cluster_region#b:
+        id: "#publicSubnet2#"
+      #eks_cluster_region#c:
+      #  id: "#publicSubnet3#"
+
+managedNodeGroups:
+  - name: on-demand
+    instanceTypes: ["m5a.large"]
+    availabilityZones: ["ap-south-1b"]
+    privateNetworking: true
+    minSize: 1
+    maxSize: 2
+    desiredCapacity: 1
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "on-demand"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  - name: spot
+    instanceTypes: ["t3a.large", "t3.large"]
+    availabilityZones: ["ap-south-1a","ap-south-1b"]
+    privateNetworking: true
+    spot: true
+    minSize: 0
+    maxSize: 20
+    desiredCapacity: 0
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "spot"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+secretsEncryption:
+  # KMS key used for envelope encryption of Kubernetes secrets
+  keyARN: arn:aws:kms:ap-south-1:518955882229:key/9d25f787-3294-403e-81f1-b6fc15ba3d44

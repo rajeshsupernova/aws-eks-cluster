@@ -1,0 +1,110 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: MyCluster-nonprod
+  region: eu-west-1
+
+
+
+managedNodeGroups:
+  - name: on-demand
+    instanceTypes: ["t3a.large"]
+    availabilityZones: ["eu-west-1b"]
+    privateNetworking: true
+    minSize: 2
+    maxSize: 2
+    desiredCapacity: 2
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "on-demand"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  - name: spot-eu-west-1b-more
+    instanceTypes: [ "t3a.large", "t3.large", "m5a.large", "m6a.large", "t2.large" ]
+    availabilityZones: [ "eu-west-1b" ]
+    privateNetworking: true
+    spot: true
+    minSize: 1
+    maxSize: 20
+    desiredCapacity: 1
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: { role: "spot" }
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  - name: spot-eu-west-1ac-more
+    instanceTypes: [ "t3a.large", "t3.large", "m5a.large", "m6a.large", "t2.large" ]
+    availabilityZones: [ "eu-west-1a","eu-west-1c" ]
+    privateNetworking: true
+    spot: true
+    minSize: 1
+    maxSize: 20
+    desiredCapacity: 1
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: { role: "spot" }
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  - name: on-demand-ebs
+    instanceTypes: ["t3a.large"]
+    availabilityZones: ["eu-west-1b"]
+    privateNetworking: true
+    minSize: 2
+    maxSize: 2
+    desiredCapacity: 2
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "on-demand"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        ebs: true
+  - name: spot-eu-west-1b
+    instanceTypes: [ "t3a.large", "t3.large", "m5a.large", "m6a.large", "t2.large" ]
+    availabilityZones: [ "eu-west-1b" ]
+    privateNetworking: true
+    spot: true
+    minSize: 1
+    maxSize: 20
+    desiredCapacity: 10
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: { role: "spot" }
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        ebs: true
+  - name: spot-eu-west-1ac
+    instanceTypes: [ "t3a.large", "t3.large", "m5a.large", "m6a.large", "t2.large" ]
+    availabilityZones: [ "eu-west-1a","eu-west-1c" ]
+    privateNetworking: true
+    spot: true
+    minSize: 1
+    maxSize: 20
+    desiredCapacity: 10
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: { role: "spot" }
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        ebs: true
+secretsEncryption:
+  # KMS key used for envelope encryption of Kubernetes secrets
+  keyARN: arn:aws:kms:eu-west-1:518955882229:key/9d25f787-3294-403e-81f1-b6fc15ba3d44

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: strapi-service
+  namespace: qa-cms
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 1337
+  selector:
+    app: strapi

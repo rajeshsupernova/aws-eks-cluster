@@ -1,0 +1,44 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: #eks_cluster_name#
+  region: eu-west-1
+  
+
+
+managedNodeGroups:
+  - name: on-demand
+    instanceTypes: ["t3a.large"]
+    availabilityZones: ["eu-west-1b"]
+    privateNetworking: true
+    minSize: 2
+    maxSize: 2
+    desiredCapacity: 2
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "on-demand"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  - name: spot
+    instanceTypes: ["t3a.large", "t3.large"]
+    availabilityZones: ["eu-west-1b"]
+    privateNetworking: true
+    spot: true
+    minSize: 1
+    maxSize: 20
+    desiredCapacity: 1
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "spot"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+secretsEncryption:
+  # KMS key used for envelope encryption of Kubernetes secrets
+  keyARN: arn:aws:kms:eu-west-1:518955882229:key/9d25f787-3294-403e-81f1-b6fc15ba3d44

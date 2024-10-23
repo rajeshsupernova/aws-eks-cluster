@@ -1,0 +1,61 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: MyCluster-Prod
+  region: ap-south-1
+  version: "1.27"
+
+vpc:
+  id: "vpc-01ab16dea61860b6c"
+  subnets:
+    private:
+      ap-south-1a:
+        id: "subnet-049293d62ccfd3c8c"
+      ap-south-1b:
+        id: "subnet-0929f0394b5ff82f3"
+      ap-south-1c:
+        id: "subnet-092eebd9a3e0d2c40"
+    public:
+      ap-south-1a:
+        id: "subnet-0efa2fdff41e51b07"
+      ap-south-1b:
+        id: "subnet-01a7e8cf778a80357"
+      ap-south-1c:
+        id: "subnet-0d924be2017ca4949"
+
+managedNodeGroups:
+  - name: on-demand
+    instanceTypes: ["t3a.large"]
+    availabilityZones: ["ap-south-1b"]
+    privateNetworking: true
+    minSize: 2
+    maxSize: 2
+    desiredCapacity: 2
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "on-demand"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+  - name: spot
+    instanceTypes: ["t3a.large", "t3.large"]
+    availabilityZones: ["ap-south-1a","ap-south-1b","ap-south-1c"]
+    privateNetworking: true
+    spot: true
+    minSize: 1
+    maxSize: 20
+    desiredCapacity: 1
+    volumeEncrypted: true
+    maxPodsPerNode: 54
+    labels: {role: "spot"}
+    tags:
+      nodegroup-role: worker
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+secretsEncryption:
+  # KMS key used for envelope encryption of Kubernetes secrets
+  keyARN: arn:aws:kms:ap-south-1:518955882229:key/25183f63-4c6c-434c-9191-9f4373a83e7e

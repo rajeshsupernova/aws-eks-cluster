@@ -1,0 +1,155 @@
+grafana:
+  rbac:
+    pspEnabled: false
+  priorityClassName: system-cluster-critical
+  deploymentStrategy:
+    type: Recreate
+  smtp:
+    existingSecret: "grafana-smtp-secret"
+
+  service:
+    type: NodePort
+  resources:
+    limits:
+      memory: 500Mi
+    requests:
+      cpu: 10m
+      memory: 200Mi
+  enabled: true
+  grafana.ini:
+    smtp:
+      enabled: true
+      host: "email-smtp.eu-west-1.amazonaws.com:587"
+      from_address: alert@qsu-dev.com
+      from_name: Grafana
+      startTLS_policy: OpportunisticStartTLS
+      port: 587
+  persistence:
+    enabled: true
+    existingClaim: grafana-volume-claim
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "topology.kubernetes.io/zone"
+                operator: In
+                values:
+                  - eu-west-1b
+              - key: role
+                operator: In
+                values:
+                  - on-demand
+prometheus:
+  enabled: true
+  nodeExporter:
+    priorityClassName: system-node-critical
+    resources:
+      limits:
+        memory: 50Mi
+      requests:
+        cpu: 100m
+        memory: 30Mi
+  kube-state-metrics:
+    image:
+      repository: registry.k8s.io/kube-state-metrics/kube-state-metrics
+    resources:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  pushgateway:
+    resources:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 50Mi
+  alertmanager:
+    resources:
+      limits:
+        memory: 200Mi
+      requests:
+        cpu: 10m
+        memory: 20Mi
+    persistentVolume:
+      enabled: false
+  server:
+    priorityClassName: system-cluster-critical
+    readinessProbeFailureThreshold: 10
+    readinessProbeInitialDelay: 600
+    readinessProbePeriodSeconds: 60
+    startupProbe:
+      enabled: true
+      periodSeconds: 60
+      failureThreshold: 100
+      timeoutSeconds: 10
+    strategy:
+      type: Recreate
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "topology.kubernetes.io/zone"
+                  operator: In
+                  values:
+                    - eu-west-1b
+                - key: role
+                  operator: In
+                  values:
+                    - on-demand
+    resources:
+      limits:
+        memory: 7000Mi
+      requests:
+        cpu: 50m
+        memory: 4000Mi
+    persistentVolume:
+      enabled: true
+      existingClaim: prometheus-volume-claim
+loki:
+  rbac:
+    pspEnabled: false
+  priorityClassName: system-cluster-critical
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: "topology.kubernetes.io/zone"
+                operator: In
+                values:
+                  - eu-west-1b
+  config:
+    chunk_store_config:
+      max_look_back_period: 672h
+    table_manager:
+      retention_deletes_enabled: true
+      retention_period: 672h
+  resources:
+    limits:
+     memory: 2024Mi
+    requests:
+     cpu: 100m
+     memory: 2024Mi
+  persistence:
+    enabled: true
+    existingClaim: loki-volume-claim
+promtail:
+  priorityClassName: system-node-critical
+  resources:
+    limits:
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+
+
+
+
+
+
+

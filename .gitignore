@@ -1,0 +1,6 @@
+.idea/
+eks/autoscaler
+devStandard/charts/*
+dev/charts/*
+devStandard/Chart.lock
+dev/Chart.lock
