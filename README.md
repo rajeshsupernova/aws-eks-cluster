@@ -42,6 +42,20 @@ eksctl create iamidentitymapping --region ap-south-1 --cluster cluster-name --ar
 ### Loki Stack
 Please click [here](docs/loki.md) to install Loki Stack (Loki/Grafana/Prometheus)
 
+### Steps to Authenticate and access cluster.
+
+Get Your STS Token from MFA and configure by executing [this](awsAuthMFA2.ps1) Powershell Script. Please edit this powrshell script in notepad and replace 'arn:aws:iam::518955882229:mfa/GA-Iphone14ProMax' with your MFA ARN before execution.
+
+Prequisite : Install and configure [AWS CLI V2](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html).
+
+
+Add-Ons Tools:
+1. [Chocolatey](https://chocolatey.org/install#generic)
+2. [eksctl](https://community.chocolatey.org/packages/eksctl)
+3. [kubectl](https://community.chocolatey.org/packages/kubernetes-cli)
+4. [k9s](https://community.chocolatey.org/packages/k9s)
+
+
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
